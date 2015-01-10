@@ -1,1 +1,8 @@
+*.pyc
+
+src/log.txt
+note.md
+
 .idea/
+src/wemedia/uploads/
+src/wemedia/static/image/*
