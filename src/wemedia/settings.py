@@ -4,6 +4,7 @@ import os
 import logging
 
 DEBUG = True
+SECRET_KEY = '\xb2Q"\xce\xb1\xe42b\xcf\xe8\xc1\xcf#]\xb9\xb1\xc5g\x94\x9ba&\xf9&'
 
 # 项目路径
 WEMEDIA_PATH = os.path.dirname(__file__)
@@ -16,7 +17,7 @@ LOG_LEVEL = logging.DEBUG
 DB_CONFIG = dict(
     host='localhost',
     user='root',
-    passwd='',
+    passwd='britten',
     db='wemedia',
     charset='utf8',
 )
@@ -39,3 +40,17 @@ ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
 
 # 最新文章
 NEW_ARTICLE_LIMIT = 10
+
+# 文章排行
+RANK_ARTICLE_LIMIT = 10
+
+# 邮件配置
+MAIL_SERVER = 'smtp.163.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'zhoujingzhong05@163.com'
+MAIL_PASSWORD = 'britten'
+
+DEFAULT_USERNAME = u'匿名用户'
+DEFAULT_AVATAR= u'default_avatar.png'

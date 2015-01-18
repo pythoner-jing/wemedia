@@ -9,9 +9,19 @@ import hashlib
 import os
 
 from functools import wraps
-from flask import send_file
+from flask import send_file, current_app
 from requests import get
 from werkzeug import secure_filename
+from threading import Thread
+from flask.ext.mail import Mail, Message
+
+
+# 异步装饰器
+def async(f):
+    def wrapper(*args, **kwargs):
+        t = Thread(target=f, args=args, kwargs=kwargs)
+        t.start()
+    return wrapper
 
 
 # 分页
@@ -68,3 +78,12 @@ def save_file(f):
     filename = enc.hexdigest()
     f.save(os.path.join(settings.UPLOAD_FOLDER, filename))
     return filename
+
+
+# 发送邮件
+def send_mail(subject, sender, recipients, text_body, html_body):
+    msg = Message(subject, sender=sender, recipients=recipients)
+    msg.body = text_body
+    msg.html = html_body
+    mail = Mail(current_app)
+    mail.send(msg)

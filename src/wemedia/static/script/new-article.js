@@ -4,7 +4,6 @@ $(document).ready(function(){
 
     function _add_plain_text(){
         $plain_text.val(editor.getPlainTxt());
-        alert($plain_text.val());
     }
 
     add_plain_text = _add_plain_text;

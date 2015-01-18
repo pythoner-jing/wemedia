@@ -8,6 +8,7 @@ import os
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import LoginManager
 
 db = None
 
@@ -46,6 +47,20 @@ def create_app():
     setup_blueprints(app)
     setup_logger(app)
 
+    # 登录管理器
+    login_manager = LoginManager()
+    login_manager.setup_app(app)
+    login_manager.login_view = 'Common.login'
+    login_manager.login_message = u'请登录'
+
+    @login_manager.user_loader
+    def load_user(userid):
+        from wemedia.common.models import User
+
+        user = User.query.get(userid)
+
+        return user
+
     return app
 
 
@@ -58,7 +73,7 @@ def setup_blueprints(app):
 def setup_logger(app):
     log_path = wemedia.settings.LOG_PATH
     handler = logging.handlers.TimedRotatingFileHandler(log_path, when='d',
-                                                        interval=1)
+            interval=1)
     handler.setLevel(wemedia.settings.LOG_LEVEL)
     formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s')
     handler.setFormatter(formatter)

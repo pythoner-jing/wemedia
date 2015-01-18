@@ -6,3 +6,5 @@ note.md
 .idea/
 src/wemedia/uploads/
 src/wemedia/static/image/*
+
+*.swp

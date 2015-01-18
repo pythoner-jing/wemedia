@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container" style="width:400px;margin-top:50px;">
+  <div class="panel panel-default">
+    <div class="panel-heading">用户登录</div>
+    <div class="panel-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      <form role="form" action="{{ url_for('Common.login') }}" method="POST">
+        <div class="form-group">
+          <label for="">邮箱</label>
+          <input name="email" type="text" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+          <label for="">密码</label>
+          <input name="password" type="password" class="form-control" placeholder="">
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox">记住我
+            <a href="{{ url_for('Common.registry') }}">注册帐号</a>
+          </label>
+        </div>
+        <input type="submit" class="btn btn-success pull-right" value="登录"/>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
