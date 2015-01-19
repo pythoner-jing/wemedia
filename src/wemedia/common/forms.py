@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from wtforms import Form, PasswordField, validators, StringField, DateField, FileField
+from wtforms import Form, PasswordField, validators, StringField, DateField, FileField, IntegerField
 
 
 class ArticleForm(Form):
@@ -23,3 +23,9 @@ class LoginForm(Form):
 class RegistryForm(Form):
     email = StringField('email', [validators.DataRequired()])
     password = PasswordField('password', [validators.DataRequired()])
+
+
+class CommentForm(Form):
+    content = StringField('content', [validators.DataRequired()])
+    article_id = IntegerField('article_id', [validators.DataRequired()])
+    quote_id = IntegerField('quote_id', [validators.DataRequired()])

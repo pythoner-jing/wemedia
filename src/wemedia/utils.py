@@ -9,7 +9,7 @@ import hashlib
 import os
 
 from functools import wraps
-from flask import send_file, current_app
+from flask import send_file, current_app, redirect
 from requests import get
 from werkzeug import secure_filename
 from threading import Thread
@@ -42,10 +42,7 @@ def paging(page_num, model_query, page_size=settings.PAGE_SIZE,
     return dict(
         last=last,
         current=page_num,
-        page_group=range(start + 1, start + 1 + page_group_size),
-        entities=entities,
-    )
-
+        page_group=range(start + 1, start + 1 + page_group_size), entities=entities)
 
 # 图片缩放
 # def zoom(uri, size):

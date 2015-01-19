@@ -2,20 +2,17 @@
 
 from flask import url_for, render_template, request, redirect, flash, \
     current_app, abort, send_from_directory, copy_current_request_context
-from flask.ext.sqlalchemy import SQLAlchemy, sqlalchemy
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from requests import post, get
 from wemedia.common import Common
-from models import *
-from forms import *
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from models import User, Article, Comment
+from forms import ArticleForm, LoginForm, ArticleUpdateForm, RegistryForm, \
+        CommentForm
 from IPython import embed
 from wemedia import db
 from threading import Thread
+from wemedia import utils as utils
 
 import json
-import time
-import wemedia.utils as utils
 import hashlib
 
 
@@ -60,16 +57,19 @@ def article_new():
 @Common.route('/article/delete/<int:article_id>/', methods=['GET'])
 @login_required
 def article_delete(article_id):
-    db.delete(Article.query.get(article_id))
+    a = Article.query.get(article_id)
+    assert current_user == a.author, abort(401)
+    db.delete(a)
     return redirect(url_for('Common.index'))
 
 
 @Common.route('/article/update/<int:article_id>/', methods=['GET', 'POST'])
 @login_required
 def article_update(article_id):
-    form = ArticleForm(request.form)
+    form = ArticleUpdateForm(request.form)
     if form.validate():
         a = Article.query.get(article_id)
+        assert a.author == current_user, abort(401)
         a.title = form.title.data
         a.content = form.content.data
         a.plain_text = form.plain_text.data
@@ -160,3 +160,26 @@ def activate(user_id, activate_code):
         flash(u'激活帐号失败', u'danger')
 
     return render_template('message.html')
+
+
+@Common.route('/comment/new/', methods=['POST'])
+@login_required
+def comment_new():
+    form = CommentForm(request.form)
+
+    if form.validate():
+        form.quote_id.data = None if form.quote_id.data < 0 else form.quote_id.data
+        c = Comment(form.article_id.data, current_user, form.content.data, form.quote_id.data)
+        db.save(c)
+
+        return redirect(url_for('Common.article', article_id=form.article_id.data))
+
+    return redirect(url_for('Common.index'))
+
+
+@Common.route('/comment/delete/<int:article_id>/<int:comment_id>/', methods=['GET'])
+def comment_delete(article_id, comment_id):
+   c = Comment.query.get(comment_id)
+   db.delete(c)
+
+   return redirect(url_for('Common.article', article_id=article_id))

@@ -18,18 +18,62 @@
   <h3>{{ article.title }}</h3>
   <div class="clearfix">
     <div class="pull-left">
+      <span class="glyphicon glyphicon-user"></span>
+      <a href=""> {{ article.author.username }}</a>
+
       <span class="glyphicon glyphicon-calendar"></span>
       <span class="text-muted"> {{ article.created }}</span>
     </div>
+    {% if article.author == current_user %}
     <div class="pull-right">
       <a href="{{ url_for('Common.article_update', article_id=article.id) }}"><span title="编辑" class="text-muted glyphicon glyphicon-edit"></span></a>
       <a href="{{ url_for('Common.article_delete', article_id=article.id) }}"><span title="删除" class="text-muted glyphicon glyphicon-trash"></span></a>
     </div>
+    {% endif %}
   </div>
   <hr/>
   <div>
     {{ article.content|safe }}
   </div>
+  <hr/>
+  <h5>发布评论</h5>
+  <div class="clearfix">
+    <form action="{{ url_for('Common.comment_new') }}" method="POST">
+      <input type="hidden" name="quote_id" value="-1">
+      <input type="hidden" name="article_id" value="{{ article.id }}">
+      {% if not current_user.is_authenticated() %}
+      <textarea class="form-control" id="" name="content" cols="30" rows="5" disabled="disabled"></textarea>
+      {% else %}
+      <textarea class="form-control" id="" name="content" cols="30" rows="5"></textarea>
+      {% endif %}
+      <input style="margin-top:10px;" type="submit" value="发布评论" class="btn btn-primary pull-right">
+    </form>
+  </div>
+  <h5 style="margin-top:25px;">评论列表</h5>
+  <hr>
+  {% for comment in article.comments %}
+  <div class="media" style="">
+    <div class="media-left" style="text-align:center;max-width:100px;">
+      <a href="">
+        <img src="{{ url_for('Common.uploaded_file', filename=comment.author.avatar) }}" width="64px" height="64px" alt="...">
+      </a>
+    </div>
+    <div class="media-body clearfix" style="width:100%;">
+      <div class="media-heading">
+        <a href="">{{ comment.author.username }}</a> <span class="text-muted">2014-01-18 21:29</span>
+        <div class="pull-right"><span class="glyphicon glyphicon-star-empty"></span> 15</div>
+      </div>
+      <div style="margin-bottom:10px;">{{ comment.content }}</div>
+      <div class="pull-right">
+        {% if comment.author == current_user %}
+        <a href="{{ url_for('Common.comment_delete', article_id=article.id, comment_id=comment.id) }}" class="text-danger">删除</a>
+        {% endif %}
+        <a href="">回复</a>
+      </div>
+    </div>
+  </div>
+  <hr>
+  {% endfor %}
 </div>
 
 {% endblock %}

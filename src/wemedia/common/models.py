@@ -69,5 +69,31 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return (u'<User %s>' % self.username).encode('utf-8')
 
+
+# 评论
+class Comment(db.Model):
+    __tablename__ = 'comment'
+    id = db.Column(db.Integer, primary_key=True)
+
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))
+
+    content = db.Column(db.TEXT)
+
+    article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
+    article = db.relationship('Article', backref=db.backref('comments', lazy='dynamic'))
+
+    quote_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    quote = db.relationship('Comment', backref=db.backref('comments'), remote_side=[id])
+
+    deleted = db.Column(db.Boolean, default=False)
+
+    def __init__(self, article_id, author, content, quote_id):
+        self.article_id = article_id
+        self.author = author
+        self.content = content
+        self.quote_id = quote_id
+
+
 # db.drop_all()
 db.create_all()

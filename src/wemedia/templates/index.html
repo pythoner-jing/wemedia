@@ -107,7 +107,7 @@
         {% for article in new_articles|reverse %}
         <div class="media">
           <div class="media-left" style="text-align:center;">
-            <a href="{{ url_for('Common.article', article_id=article.id) }}">
+            <a href="">
               <img src="{{ url_for('Common.uploaded_file', filename=article.author.avatar) }}" width="64px" height="64px" alt="...">
             </a>
             <div style="margin-top:5px;"><a href="">{{ article.author.username }}</a></div>
